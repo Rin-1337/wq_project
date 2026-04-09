@@ -1,0 +1,1621 @@
+﻿/**
+ * questions.js — Question Bank for WordQuest
+ * ============================================
+ * Nested structure: QUESTIONS[stageId][subLevelId] = Array of 5 questions
+ *
+ * Game Modes (ประเภทของ Gameplay แต่ละ Stage):
+ *   Stage 1 — multiple-choice  : 4-choice MCQ มาตรฐาน (Vocabulary basics)
+ *   Stage 2 — type-in-blank    : พิมพ์คำตอบในช่องว่าง (Spelling & Grammar)
+ *   Stage 3 — sentence-scramble: เรียงคำที่สลับกันให้เป็นประโยคที่ถูกต้อง
+ *   Stage 4 — true-false       : ตัดสิน True/False อย่างรวดเร็ว (Time Blitz)
+ *   Stage 5 — image-word-match : โจทย์คำอธิบาย/hint → เลือกคำที่ตรงกัน (Advanced)
+ *
+ * Stages:
+ *   1 — The Basics       (Alphabet → Pronouns → Verbs → Sentences → Numbers)
+ *   2 — Word Builder     (Fill-in-the-Blank: Spelling & Grammar focus)
+ *   3 — Grammar Gates    (Sentence Scramble: เรียงประโยค)
+ *   4 — Read & Conquer   (True/False Blitz: ตัดสิน statement ถูก/ผิด)
+ *   5 — Master's Hall    (Image-to-Word Match: Advanced comprehension)
+ *
+ * Schema ตาม mode:
+ *
+ *   multiple-choice:
+ *     id, theme, q, options[], answer (index 0-3), hint
+ *
+ *   type-in-blank:
+ *     id, theme, q (ประโยคมี ___), answer (string), acceptedAnswers[] (อนุญาต variant),
+ *     hint, timeLimit (วินาที)
+ *
+ *   sentence-scramble:
+ *     id, theme, words[] (array คำที่สลับแล้ว), correctOrder[] (index ลำดับที่ถูก),
+ *     hint, timeLimit
+ *
+ *   true-false:
+ *     id, theme, statement, answer (boolean), hint, timeLimit
+ *
+ *   image-word-match:
+ *     id, theme, imageEmoji (emoji แทน image), description (คำอธิบายตัวชี้),
+ *     options[], answer (index 0-3), hint
+ */
+
+window.QUESTIONS = {
+
+    /* ════════════════════════════════════════════════════════════
+       STAGE 1 — The Basics  (Classic Quiz — Multiple Choice)
+       Mode: multiple-choice
+       Difficulty: Beginner → Foundational literacy
+       How to play: เลือกคำตอบที่ถูกต้องจาก 4 ตัวเลือก
+    ════════════════════════════════════════════════════════════ */
+    1: {
+        _mode: 'multiple-choice',
+        _howToPlay: 'เลือกคำตอบที่ถูกต้องจาก 4 ตัวเลือก — กดปุ่ม A/B/C/D',
+
+        /* ── Sub-level 1 · Theme: Alphabet & Vowels ─────────── */
+        1: [
+            {
+                id: '1-1-1',
+                theme: 'Alphabet & Vowels',
+                q: 'Which word starts with a vowel?',
+                options: ['cat', 'bag', 'ant', 'dog'],
+                answer: 2,
+                hint: 'Vowels are A, E, I, O, U. "ant" starts with the vowel A.',
+            },
+            {
+                id: '1-1-2',
+                theme: 'Alphabet & Vowels',
+                q: 'How many letters are in the English alphabet?',
+                options: ['24', '25', '26', '27'],
+                answer: 2,
+                hint: 'The English alphabet runs from A to Z — 26 letters in total.',
+            },
+            {
+                id: '1-1-3',
+                theme: 'Alphabet & Vowels',
+                q: 'Which of these is a vowel?',
+                options: ['b', 'c', 'e', 'g'],
+                answer: 2,
+                hint: 'The five vowels are A, E, I, O, U. "e" is a vowel.',
+            },
+            {
+                id: '1-1-4',
+                theme: 'Alphabet & Vowels',
+                q: 'Which word rhymes with "cat"?',
+                options: ['dog', 'sat', 'pen', 'run'],
+                answer: 1,
+                hint: '"sat" and "cat" both end in the -at sound.',
+            },
+            {
+                id: '1-1-5',
+                theme: 'Alphabet & Vowels',
+                q: 'Which is the correct spelling for a place to live?',
+                options: ['hous', 'house', 'howse', 'hause'],
+                answer: 1,
+                hint: 'The correct spelling is H-O-U-S-E.',
+            },
+        ],
+
+        /* ── Sub-level 2 · Theme: Pronouns ─────────────────── */
+        2: [
+            {
+                id: '1-2-1',
+                theme: 'Pronouns',
+                q: 'Which pronoun refers to a female person?',
+                options: ['he', 'it', 'they', 'she'],
+                answer: 3,
+                hint: '"She" is the singular female pronoun. "He" is male, "it" is for things, and "they" is plural.',
+            },
+            {
+                id: '1-2-2',
+                theme: 'Pronouns',
+                q: 'Fill in the blank: "___ am very hungry."',
+                options: ['He', 'She', 'I', 'They'],
+                answer: 2,
+                hint: '"I" is the first-person singular subject pronoun used for yourself.',
+            },
+            {
+                id: '1-2-3',
+                theme: 'Pronouns',
+                q: 'Which pronoun is used for a group of people?',
+                options: ['he', 'she', 'it', 'they'],
+                answer: 3,
+                hint: '"They" is the third-person plural pronoun used for groups.',
+            },
+            {
+                id: '1-2-4',
+                theme: 'Pronouns',
+                q: 'Fill in the blank: "The dog wagged ___ tail."',
+                options: ['his', 'her', 'its', 'our'],
+                answer: 2,
+                hint: '"Its" is the possessive pronoun for animals and things (no apostrophe).',
+            },
+            {
+                id: '1-2-5',
+                theme: 'Pronouns',
+                q: 'Which of these is a SUBJECT pronoun?',
+                options: ['me', 'him', 'her', 'we'],
+                answer: 3,
+                hint: 'Subject pronouns go before the verb: I, you, he, she, it, we, they. "We" is the only subject pronoun here.',
+            },
+        ],
+
+        /* ── Sub-level 3 · Theme: Basic Verbs ──────────────── */
+        3: [
+            {
+                id: '1-3-1',
+                theme: 'Basic Verbs',
+                q: 'Which word is a verb (action word)?',
+                options: ['big', 'happy', 'jump', 'red'],
+                answer: 2,
+                hint: 'Verbs express actions or states. "Jump" is an action, while the others are adjectives.',
+            },
+            {
+                id: '1-3-2',
+                theme: 'Basic Verbs',
+                q: 'Fill in the blank: "Birds ___ in the sky."',
+                options: ['jumps', 'runs', 'fly', 'eats'],
+                answer: 2,
+                hint: '"Birds" is plural, so the verb has no -s. "Fly" is the correct present simple form.',
+            },
+            {
+                id: '1-3-3',
+                theme: 'Basic Verbs',
+                q: 'What is the verb in: "The dog chases the cat."?',
+                options: ['dog', 'chases', 'the', 'cat'],
+                answer: 1,
+                hint: 'Verbs show the action. "Chases" is what the dog is doing.',
+            },
+            {
+                id: '1-3-4',
+                theme: 'Basic Verbs',
+                q: 'Which of these is NOT a verb?',
+                options: ['eat', 'sleep', 'apple', 'run'],
+                answer: 2,
+                hint: '"Apple" is a noun (a thing). Eat, sleep, and run are all action words.',
+            },
+            {
+                id: '1-3-5',
+                theme: 'Basic Verbs',
+                q: 'Fill in the blank: "She ___ her hands before eating."',
+                options: ['wash', 'washing', 'washes', 'washed'],
+                answer: 2,
+                hint: 'For he/she/it in present simple, add -s or -es. "She washes" is correct.',
+            },
+        ],
+
+        /* ── Sub-level 4 · Theme: Simple Sentences ──────────── */
+        4: [
+            {
+                id: '1-4-1',
+                theme: 'Simple Sentences',
+                q: 'Which of these is a complete sentence?',
+                options: ['Runs fast.', 'The dog.', 'The dog runs fast.', 'Fast running dog.'],
+                answer: 2,
+                hint: 'A complete sentence needs a subject (the dog) AND a verb (runs). "The dog runs fast." has both.',
+            },
+            {
+                id: '1-4-2',
+                theme: 'Simple Sentences',
+                q: 'What is the SUBJECT in: "Mary drinks milk."?',
+                options: ['drinks', 'milk', 'Mary', 'drinks milk'],
+                answer: 2,
+                hint: 'The subject is WHO or WHAT does the action. Mary is the one drinking.',
+            },
+            {
+                id: '1-4-3',
+                theme: 'Simple Sentences',
+                q: 'Which word order is correct in English?',
+                options: ['Like I cats.', 'Cats I like.', 'I like cats.', 'Like cats I.'],
+                answer: 2,
+                hint: 'Basic English sentence order is Subject → Verb → Object. "I (S) like (V) cats (O)."',
+            },
+            {
+                id: '1-4-4',
+                theme: 'Simple Sentences',
+                q: 'Choose the CORRECT sentence.',
+                options: ['I has a pen.', 'I haves a pen.', 'I have a pen.', 'Me have a pen.'],
+                answer: 2,
+                hint: '"Have" is used with I, you, we, they. "I have a pen." is correct.',
+            },
+            {
+                id: '1-4-5',
+                theme: 'Simple Sentences',
+                q: 'What is the OBJECT in: "Tom reads a book."?',
+                options: ['Tom', 'reads', 'a book', 'Tom reads'],
+                answer: 2,
+                hint: 'The object receives the action. Tom reads WHAT? — a book.',
+            },
+        ],
+
+        /* ── Sub-level 5 · Theme: Numbers & Colors ──────────── */
+        5: [
+            {
+                id: '1-5-1',
+                theme: 'Numbers & Colors',
+                q: 'How do you spell the number 4?',
+                options: ['for', 'fore', 'four', 'fower'],
+                answer: 2,
+                hint: 'The number 4 is spelled F-O-U-R. "For" and "fore" are different words.',
+            },
+            {
+                id: '1-5-2',
+                theme: 'Numbers & Colors',
+                q: 'What color do you get by mixing blue and yellow?',
+                options: ['red', 'purple', 'orange', 'green'],
+                answer: 3,
+                hint: 'Blue + yellow = green. This is one of the secondary colors.',
+            },
+            {
+                id: '1-5-3',
+                theme: 'Numbers & Colors',
+                q: 'How many sides does a triangle have?',
+                options: ['2', '3', '4', '5'],
+                answer: 1,
+                hint: 'A triangle (tri = three) always has exactly 3 sides.',
+            },
+            {
+                id: '1-5-4',
+                theme: 'Numbers & Colors',
+                q: 'Which number comes after nineteen?',
+                options: ['eighteen', 'eleven', 'twenty', 'thirty'],
+                answer: 2,
+                hint: 'The sequence is: seventeen, eighteen, nineteen, twenty.',
+            },
+            {
+                id: '1-5-5',
+                theme: 'Numbers & Colors',
+                q: 'What color is a ripe banana?',
+                options: ['red', 'green', 'blue', 'yellow'],
+                answer: 3,
+                hint: 'A fully ripe banana turns yellow. Unripe bananas are green.',
+            },
+        ],
+    },
+
+    /* ════════════════════════════════════════════════════════════
+       STAGE 2 — Type-in-the-Blank  (Spelling & Grammar Focus)
+       Mode: type-in-blank
+       Difficulty: Elementary → Spelling & sentence completion
+       How to play: อ่านประโยค เติมคำที่หายไปใน ___ พิมพ์คำตอบแล้วกด Enter
+    ════════════════════════════════════════════════════════════ */
+    2: {
+        _mode: 'type-in-blank',
+        _howToPlay: '✏️ อ่านประโยค แล้วพิมพ์คำที่ขาดหายไปในช่องว่าง กด Enter เพื่อตรวจ',
+
+        /* ── Sub-level 1 · Theme: Simple Vocabulary ─────────── */
+        1: [
+            {
+                id: '2-1-1',
+                theme: 'Simple Vocabulary',
+                // ประโยคที่มีคำว่า ___ แทนที่คำที่หายไป
+                q: 'The opposite of "hot" is _____.',
+                answer: 'cold',
+                // acceptedAnswers — รับคำตอบที่ถูกต้องหลายรูปแบบ (ตัวพิมพ์เล็ก/ใหญ่ไม่สำคัญ)
+                acceptedAnswers: ['cold'],
+                hint: 'Hot and cold are antonyms (opposites). Ice is cold.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-1-2',
+                theme: 'Simple Vocabulary',
+                q: 'A place where you borrow books is called a _____.',
+                answer: 'library',
+                acceptedAnswers: ['library'],
+                hint: 'A library is a building where books are kept for people to borrow and read.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-1-3',
+                theme: 'Simple Vocabulary',
+                q: 'We use an _____ to brush our teeth.',
+                answer: 'toothbrush',
+                acceptedAnswers: ['toothbrush', 'tooth brush'],
+                hint: 'A toothbrush is the tool used with toothpaste to clean your teeth.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-1-4',
+                theme: 'Simple Vocabulary',
+                q: 'The baby cat is called a _____.',
+                answer: 'kitten',
+                acceptedAnswers: ['kitten'],
+                hint: 'A kitten is a young cat. A puppy is a young dog.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-1-5',
+                theme: 'Simple Vocabulary',
+                q: 'Water becomes _____ when it is frozen.',
+                answer: 'ice',
+                acceptedAnswers: ['ice'],
+                hint: 'When water reaches 0°C, it freezes and becomes solid ice.',
+                timeLimit: 20,
+            },
+        ],
+
+        /* ── Sub-level 2 · Theme: Verbs & Tenses ────────────── */
+        2: [
+            {
+                id: '2-2-1',
+                theme: 'Verbs & Tenses',
+                q: 'She _____ to school every day. (go — present simple)',
+                answer: 'goes',
+                acceptedAnswers: ['goes'],
+                hint: 'Third-person singular (she/he/it) adds -s or -es: go → goes.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-2-2',
+                theme: 'Verbs & Tenses',
+                q: 'Yesterday, I _____ a delicious pizza. (eat — past simple)',
+                answer: 'ate',
+                acceptedAnswers: ['ate'],
+                hint: '"Eat" is irregular. Past simple of eat = ate.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-2-3',
+                theme: 'Verbs & Tenses',
+                q: 'They are _____ football in the park right now. (play)',
+                answer: 'playing',
+                acceptedAnswers: ['playing'],
+                hint: 'Present continuous = is/are + verb-ing. play → playing.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-2-4',
+                theme: 'Verbs & Tenses',
+                q: 'She _____ her homework before dinner. (finish — past simple)',
+                answer: 'finished',
+                acceptedAnswers: ['finished'],
+                hint: 'Regular verb: add -ed for past simple. finish → finished.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-2-5',
+                theme: 'Verbs & Tenses',
+                q: 'He will _____ hard for the exam next week. (study)',
+                answer: 'study',
+                acceptedAnswers: ['study'],
+                hint: 'Future simple: will + base verb (no -s, no -ing). will study.',
+                timeLimit: 20,
+            },
+        ],
+
+        /* ── Sub-level 3 · Theme: Articles & Prepositions ───── */
+        3: [
+            {
+                id: '2-3-1',
+                theme: 'Articles & Prepositions',
+                q: 'I saw _____ elephant at the zoo. (a or an?)',
+                answer: 'an',
+                acceptedAnswers: ['an'],
+                hint: 'Use "an" before vowel sounds. "Elephant" starts with a vowel sound.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-3-2',
+                theme: 'Articles & Prepositions',
+                q: 'She was born _____ 1999. (in / on / at)',
+                answer: 'in',
+                acceptedAnswers: ['in'],
+                hint: 'Use "in" with years and months: born in 1999, in June.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-3-3',
+                theme: 'Articles & Prepositions',
+                q: 'The cat is hiding _____ the sofa. (under / on / in)',
+                answer: 'under',
+                acceptedAnswers: ['under'],
+                hint: '"Under" means below something. The cat is beneath the sofa.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-3-4',
+                theme: 'Articles & Prepositions',
+                q: 'He is _____ engineer. He designs buildings.',
+                answer: 'an',
+                acceptedAnswers: ['an'],
+                hint: '"Engineer" starts with a vowel sound (E), so use "an".',
+                timeLimit: 20,
+            },
+            {
+                id: '2-3-5',
+                theme: 'Articles & Prepositions',
+                q: 'The meeting starts _____ 9 am tomorrow.',
+                answer: 'at',
+                acceptedAnswers: ['at'],
+                hint: 'Use "at" with specific times: at 9 am, at noon, at midnight.',
+                timeLimit: 20,
+            },
+        ],
+
+        /* ── Sub-level 4 · Theme: Adjectives & Spelling ─────── */
+        4: [
+            {
+                id: '2-4-1',
+                theme: 'Adjectives & Spelling',
+                q: 'The correct spelling of a large sea animal is w-h-a-l-e. Spell it: _____.',
+                answer: 'whale',
+                acceptedAnswers: ['whale'],
+                hint: 'W-H-A-L-E. A whale is the largest animal on Earth.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-4-2',
+                theme: 'Adjectives & Spelling',
+                q: '"She is the _____ student in the class." — Superlative of "smart".',
+                answer: 'smartest',
+                acceptedAnswers: ['smartest'],
+                hint: 'Short adjectives: add -est for superlative. smart → smartest.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-4-3',
+                theme: 'Adjectives & Spelling',
+                q: 'Spell the number that comes after nineteen: _____.',
+                answer: 'twenty',
+                acceptedAnswers: ['twenty'],
+                hint: 'T-W-E-N-T-Y. 20 comes after 19.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-4-4',
+                theme: 'Adjectives & Spelling',
+                q: 'The adjective form of "beauty" is _____.',
+                answer: 'beautiful',
+                acceptedAnswers: ['beautiful'],
+                hint: 'beauty → beautiful. Drop the y and add -iful.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-4-5',
+                theme: 'Adjectives & Spelling',
+                q: '"He runs _____ than his brother." — Comparative of "fast".',
+                answer: 'faster',
+                acceptedAnswers: ['faster'],
+                hint: 'Short adjectives: add -er for comparative. fast → faster.',
+                timeLimit: 20,
+            },
+        ],
+
+        /* ── Sub-level 5 · Theme: Mixed Spelling Challenge ───── */
+        5: [
+            {
+                id: '2-5-1',
+                theme: 'Mixed Spelling Challenge',
+                q: 'Spell the word: A large grey animal with a trunk — _____.',
+                answer: 'elephant',
+                acceptedAnswers: ['elephant'],
+                hint: 'E-L-E-P-H-A-N-T. An elephant is the largest land animal.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-5-2',
+                theme: 'Mixed Spelling Challenge',
+                q: 'The prefix meaning "not" — used in "unhappy": _____.',
+                answer: 'un',
+                acceptedAnswers: ['un', 'un-'],
+                hint: 'The prefix "un-" means not. unhappy = not happy.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-5-3',
+                theme: 'Mixed Spelling Challenge',
+                q: 'Spell the day that comes after Sunday: _____.',
+                answer: 'monday',
+                acceptedAnswers: ['monday', 'Monday'],
+                hint: 'M-O-N-D-A-Y. Monday is the first working day of the week.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-5-4',
+                theme: 'Mixed Spelling Challenge',
+                q: 'Spell the opposite of "expensive": _____.',
+                answer: 'cheap',
+                acceptedAnswers: ['cheap', 'inexpensive'],
+                hint: 'C-H-E-A-P. Something cheap does not cost much money.',
+                timeLimit: 20,
+            },
+            {
+                id: '2-5-5',
+                theme: 'Mixed Spelling Challenge',
+                q: '"The _____ shines brightly in the sky at night." (moon)',
+                answer: 'moon',
+                acceptedAnswers: ['moon'],
+                hint: 'M-O-O-N. The moon orbits Earth and reflects sunlight at night.',
+                timeLimit: 20,
+            },
+        ],
+    },
+
+    /* ════════════════════════════════════════════════════════════
+       [LEGACY Stage 2 — Word Builder kept for reference, replaced above]
+       STAGE 2 ORIGINAL DATA — NOT ACTIVE
+       The following was the old multiple-choice Stage 2.
+       It is replaced by the type-in-blank questions above.
+    ════════════════════════════════════════════════════════════ */
+    /* ───────────────────────────────────────────────────────────
+       NOTE: Stage 2 old data block removed. See new type-in-blank
+       questions in the 2: block above.
+    ─────────────────────────────────────────────────────────── */
+
+    /* ════════════════════════════════════════════════════════════
+       STAGE 2 — Type-in-the-Blank  (Spelling & Grammar Focus)
+       Mode: type-in-blank
+       Difficulty: Elementary → Spelling & sentence completion
+       How to play: อ่านประโยค เติมคำที่หายไปใน ___ พิมพ์คำตอบแล้วกด Enter
+    ════════════════════════════════════════════════════════════ */
+    // [[ THIS MARKER IS NON-USED — stage 2 data is above ]]
+
+    /* ════════════════════════════════════════════════════════════
+       STAGE 3 — Sentence Scramble  (เรียงประโยค)
+       Mode: sentence-scramble
+       Difficulty: Pre-intermediate → Word order & sentence structure
+       How to play: กดคำตามลำดับที่ถูกต้องเพื่อสร้างประโยค
+    ════════════════════════════════════════════════════════════ */
+    // [[ existing stage 3 data starts below ]]
+
+    /* ════════════════════════════════════════════════════════════
+       STAGE 3 — ORIGINAL data START (will be replaced)
+    ════════════════════════════════════════════════════════════ */
+    // Note: Stage 3 Grammar Gates original data below is replaced.
+    // Real Stage 3 sentence-scramble data follows after this comment block.
+    OLD_STAGE3_PLACEHOLDER: null,   // ← placeholder removed by refactor
+
+                options: ['sad', 'fast', 'big', 'cold'],
+                answer: 0,
+                hint: '"Sad" is the antonym (opposite) of "happy".',
+            },
+            {
+                id: '2-1-2',
+                theme: 'Synonyms & Antonyms',
+                q: 'Which word means "very big"?',
+                options: ['tiny', 'small', 'huge', 'slim'],
+                answer: 2,
+                hint: '"Huge" means extremely large — it is a synonym for very big.',
+            },
+            {
+                id: '2-1-3',
+                theme: 'Synonyms & Antonyms',
+                q: 'What is a SYNONYM (same meaning) of "fast"?',
+                options: ['slow', 'tired', 'quick', 'lazy'],
+                answer: 2,
+                hint: '"Quick" and "fast" both mean moving with speed.',
+            },
+            {
+                id: '2-1-4',
+                theme: 'Synonyms & Antonyms',
+                q: 'What is the OPPOSITE of "day"?',
+                options: ['sun', 'light', 'evening', 'night'],
+                answer: 3,
+                hint: '"Night" is the antonym of "day" — it is the dark period after sunset.',
+            },
+            {
+                id: '2-1-5',
+                theme: 'Synonyms & Antonyms',
+                q: 'Which word means "very small"?',
+                options: ['huge', 'tall', 'tiny', 'large'],
+                answer: 2,
+                hint: '"Tiny" means extremely small in size.',
+            },
+        ],
+
+        /* ── Sub-level 2 · Theme: Occupations ──────────────── */
+        2: [
+            {
+                id: '2-2-1',
+                theme: 'Occupations',
+                q: 'What does the word "ancient" mean?',
+                options: ['brand new', 'very small', 'very old', 'very bright'],
+                answer: 2,
+                hint: '"Ancient" describes something that existed a very long time ago.',
+            },
+            {
+                id: '2-2-2',
+                theme: 'Occupations',
+                q: 'A person who writes books is called an ___.',
+                options: ['actor', 'author', 'artist', 'athlete'],
+                answer: 1,
+                hint: 'An "author" creates written works such as novels and stories.',
+            },
+            {
+                id: '2-2-3',
+                theme: 'Occupations',
+                q: 'Which job involves cooking meals in a restaurant?',
+                options: ['nurse', 'pilot', 'chef', 'lawyer'],
+                answer: 2,
+                hint: 'A "chef" is a professional cook, especially in a restaurant.',
+            },
+            {
+                id: '2-2-4',
+                theme: 'Occupations',
+                q: 'A person who teaches is called a ___.',
+                options: ['doctor', 'teacher', 'chef', 'pilot'],
+                answer: 1,
+                hint: 'Teachers educate students, usually in a school or university.',
+            },
+            {
+                id: '2-2-5',
+                theme: 'Occupations',
+                q: 'A person who defends people in court is a ___.',
+                options: ['judge', 'nurse', 'engineer', 'lawyer'],
+                answer: 3,
+                hint: 'A "lawyer" provides legal advice and represents clients in court.',
+            },
+        ],
+
+        /* ── Sub-level 3 · Theme: Food & Nature ─────────────── */
+        3: [
+            {
+                id: '2-3-1',
+                theme: 'Food & Nature',
+                q: 'Which of these is a fruit?',
+                options: ['carrot', 'potato', 'mango', 'onion'],
+                answer: 2,
+                hint: 'Mango is a sweet tropical fruit. Carrot, potato, and onion are vegetables.',
+            },
+            {
+                id: '2-3-2',
+                theme: 'Food & Nature',
+                q: 'Which animal is a mammal?',
+                options: ['shark', 'parrot', 'whale', 'frog'],
+                answer: 2,
+                hint: 'Mammals breathe air and feed their young with milk. Whales are mammals.',
+            },
+            {
+                id: '2-3-3',
+                theme: 'Food & Nature',
+                q: 'Which food is made from milk?',
+                options: ['bread', 'rice', 'cheese', 'pasta'],
+                answer: 2,
+                hint: 'Cheese is a dairy product produced from milk.',
+            },
+            {
+                id: '2-3-4',
+                theme: 'Food & Nature',
+                q: 'A baby cat is called a ___.',
+                options: ['cub', 'kitten', 'puppy', 'chick'],
+                answer: 1,
+                hint: 'A kitten is a young cat. Puppies are baby dogs, cubs are baby bears.',
+            },
+            {
+                id: '2-3-5',
+                theme: 'Food & Nature',
+                q: 'Which of these typically grows on a tree?',
+                options: ['carrot', 'potato', 'apple', 'onion'],
+                answer: 2,
+                hint: 'Apples grow on apple trees. Carrots and potatoes grow underground.',
+            },
+        ],
+
+        /* ── Sub-level 4 · Theme: Prefixes & Suffixes ──────── */
+        4: [
+            {
+                id: '2-4-1',
+                theme: 'Prefixes & Suffixes',
+                q: 'What does the prefix "un-" mean?',
+                options: ['again', 'before', 'not', 'after'],
+                answer: 2,
+                hint: '"Un-" reverses the meaning: unhappy = not happy, unlock = not locked.',
+            },
+            {
+                id: '2-4-2',
+                theme: 'Prefixes & Suffixes',
+                q: 'The suffix "-er" in "teacher" means ___.',
+                options: [
+                    'the place where',
+                    'one who does something',
+                    'full of',
+                    'without',
+                ],
+                answer: 1,
+                hint: '"-er" often means "a person who does": teach-er, build-er, paint-er.',
+            },
+            {
+                id: '2-4-3',
+                theme: 'Prefixes & Suffixes',
+                q: 'Which word uses the prefix "re-" to mean "do again"?',
+                options: ['remote', 'reply', 'rewrite', 'reveal'],
+                answer: 2,
+                hint: '"Rewrite" means to write again. The prefix "re-" = again.',
+            },
+            {
+                id: '2-4-4',
+                theme: 'Prefixes & Suffixes',
+                q: 'Add a suffix to make "sad" into a noun: "sad___"',
+                options: ['-ly', '-ness', '-ful', '-less'],
+                answer: 1,
+                hint: '"-ness" turns adjectives into nouns: sad → sadness, happy → happiness.',
+            },
+            {
+                id: '2-4-5',
+                theme: 'Prefixes & Suffixes',
+                q: 'What does "pre-" mean in the word "preview"?',
+                options: ['after', 'against', 'before', 'without'],
+                answer: 2,
+                hint: '"Pre-" means before: preview = view before, preheat = heat before.',
+            },
+        ],
+
+        /* ── Sub-level 5 · Theme: Compound Words ────────────── */
+        5: [
+            {
+                id: '2-5-1',
+                theme: 'Compound Words',
+                q: '"Sun" + "shine" creates which compound word?',
+                options: ['sunflower', 'sunshine', 'sunset', 'sunburn'],
+                answer: 1,
+                hint: '"Sunshine" = sun + shine. It means the light and warmth from the sun.',
+            },
+            {
+                id: '2-5-2',
+                theme: 'Compound Words',
+                q: 'Which of these is a compound word?',
+                options: ['run', 'table', 'football', 'happy'],
+                answer: 2,
+                hint: '"Football" is made of two words: foot + ball. Compound words are formed from two or more words.',
+            },
+            {
+                id: '2-5-3',
+                theme: 'Compound Words',
+                q: '"Book" + which word makes a compound word for a furniture item?',
+                options: ['bag', 'table', 'shelf', 'club'],
+                answer: 2,
+                hint: '"Bookshelf" = book + shelf. A piece of furniture for storing books.',
+            },
+            {
+                id: '2-5-4',
+                theme: 'Compound Words',
+                q: 'What two simple words combine to make "rainbow"?',
+                options: ['river + bow', 'rain + bow', 'run + bow', 'red + bow'],
+                answer: 1,
+                hint: '"Rainbow" = rain + bow. A rainbow appears in the sky after rain.',
+            },
+            {
+                id: '2-5-5',
+                theme: 'Compound Words',
+                q: 'Which compound word means "a room where you sleep"?',
+                options: ['bathroom', 'bedroom', 'hallway', 'kitchen'],
+                answer: 1,
+                hint: '"Bedroom" = bed + room. It is the room containing a bed where you sleep.',
+            },
+        ],
+    },
+
+    /* ════════════════════════════════════════════════════════════
+       STAGE 3 — Grammar Gates  (Sentence Structure)
+       Difficulty: Pre-intermediate → Core grammar rules
+    ════════════════════════════════════════════════════════════ */
+    3: {
+
+        /* ── Sub-level 1 · Theme: Subject-Verb Agreement ────── */
+        1: [
+            {
+                id: '3-1-1',
+                theme: 'Subject-Verb Agreement',
+                q: 'Choose the grammatically CORRECT sentence.',
+                options: [
+                    'She go to school.',
+                    'She goes to school.',
+                    'She going to school.',
+                    'She goed to school.',
+                ],
+                answer: 1,
+                hint: 'Third-person singular (she/he/it) uses "goes" in the present simple.',
+            },
+            {
+                id: '3-1-2',
+                theme: 'Subject-Verb Agreement',
+                q: '"They ___ eating lunch right now." — Choose the correct verb.',
+                options: ['is', 'am', 'are', 'was'],
+                answer: 2,
+                hint: '"They" is plural so it takes "are" in the present continuous.',
+            },
+            {
+                id: '3-1-3',
+                theme: 'Subject-Verb Agreement',
+                q: '"He ___ like spicy food." — Choose the correct negative verb.',
+                options: ["don't", "doesn't", 'do not', 'are not'],
+                answer: 1,
+                hint: 'With he/she/it in negatives, use "doesn\'t" (does + not).',
+            },
+            {
+                id: '3-1-4',
+                theme: 'Subject-Verb Agreement',
+                q: 'Which sentence is CORRECT?',
+                options: [
+                    'The boys plays football.',
+                    'The boys play football.',
+                    'The boys playing football.',
+                    'The boys played football.',
+                ],
+                answer: 1,
+                hint: '"Boys" is plural, so the verb has no -s. "The boys play" is correct in present simple.',
+            },
+            {
+                id: '3-1-5',
+                theme: 'Subject-Verb Agreement',
+                q: '"My sister ___ to music every evening." — Choose the correct verb.',
+                options: ['listen', 'listening', 'listens', 'listened'],
+                answer: 2,
+                hint: '"Sister" = she → third-person singular → add -s: "listens".',
+            },
+        ],
+
+        /* ── Sub-level 2 · Theme: Verb Tenses ──────────────── */
+        2: [
+            {
+                id: '3-2-1',
+                theme: 'Verb Tenses',
+                q: 'What is the past tense of "eat"?',
+                options: ['eated', 'eaten', 'ate', 'eats'],
+                answer: 2,
+                hint: '"Ate" is the simple past of "eat". It is an irregular verb.',
+            },
+            {
+                id: '3-2-2',
+                theme: 'Verb Tenses',
+                q: '"She ___ go to the party tomorrow." — Choose the correct future form.',
+                options: ['was', 'is', 'will', 'did'],
+                answer: 2,
+                hint: 'Future simple uses "will + base verb". "She will go" is correct.',
+            },
+            {
+                id: '3-2-3',
+                theme: 'Verb Tenses',
+                q: 'What is the correct present continuous form of "run"?',
+                options: ['runing', 'running', 'runnig', 'runs'],
+                answer: 1,
+                hint: 'For short vowel + consonant verbs, double the final consonant before -ing: run → running.',
+            },
+            {
+                id: '3-2-4',
+                theme: 'Verb Tenses',
+                q: 'Which sentence is in the PAST tense?',
+                options: [
+                    'He walks to school.',
+                    'He will walk to school.',
+                    'He walked to school.',
+                    'He is walking to school.',
+                ],
+                answer: 2,
+                hint: '"Walked" is the past simple form. The -ed ending signals past tense.',
+            },
+            {
+                id: '3-2-5',
+                theme: 'Verb Tenses',
+                q: 'What is the past tense of "write"?',
+                options: ['writed', 'writes', 'written', 'wrote'],
+                answer: 3,
+                hint: '"Wrote" is the simple past of "write". It is an irregular verb.',
+            },
+        ],
+
+        /* ── Sub-level 3 · Theme: Articles (a / an / the) ──── */
+        3: [
+            {
+                id: '3-3-1',
+                theme: 'Articles',
+                q: 'Choose the correct article: "___ apple a day keeps the doctor away."',
+                options: ['a', 'an', 'the', 'some'],
+                answer: 1,
+                hint: 'Use "an" before words starting with a vowel sound. "Apple" starts with a vowel.',
+            },
+            {
+                id: '3-3-2',
+                theme: 'Articles',
+                q: '"I saw ___ elephant at the zoo." — Choose the correct article.',
+                options: ['a', 'an', 'the', 'some'],
+                answer: 1,
+                hint: '"Elephant" starts with a vowel sound, so use "an".',
+            },
+            {
+                id: '3-3-3',
+                theme: 'Articles',
+                q: '"She is ___ teacher." — Which article fits?',
+                options: ['a', 'an', 'the', 'no article'],
+                answer: 0,
+                hint: '"Teacher" starts with a consonant sound, so use "a". Use "a/an" for jobs in general.',
+            },
+            {
+                id: '3-3-4',
+                theme: 'Articles',
+                q: '"___ sun rises in the east." — Which article is correct?',
+                options: ['A', 'An', 'The', 'No article'],
+                answer: 2,
+                hint: 'Use "the" for unique or one-of-a-kind nouns. There is only one sun.',
+            },
+            {
+                id: '3-3-5',
+                theme: 'Articles',
+                q: '"I want ___ biscuit, please." (one unspecified biscuit) — Which fits?',
+                options: ['a', 'an', 'the', 'some'],
+                answer: 0,
+                hint: '"Biscuit" starts with a consonant sound, so use "a". Use "a/an" for any single unspecified item.',
+            },
+        ],
+
+        /* ── Sub-level 4 · Theme: Prepositions ─────────────── */
+        4: [
+            {
+                id: '3-4-1',
+                theme: 'Prepositions',
+                q: '"The book is ___ the table." (on top of it) — Which preposition fits?',
+                options: ['in', 'on', 'under', 'beside'],
+                answer: 1,
+                hint: '"On" expresses a surface position. The book rests on top of the table.',
+            },
+            {
+                id: '3-4-2',
+                theme: 'Prepositions',
+                q: '"She was born ___ 1998." — Which preposition is correct?',
+                options: ['on', 'at', 'in', 'by'],
+                answer: 2,
+                hint: 'Use "in" with years, months, and seasons: born in 1998, in June, in summer.',
+            },
+            {
+                id: '3-4-3',
+                theme: 'Prepositions',
+                q: '"He lives ___ London." — Which preposition is correct?',
+                options: ['on', 'at', 'in', 'by'],
+                answer: 2,
+                hint: 'Use "in" with cities, countries, and large areas: lives in London, in France.',
+            },
+            {
+                id: '3-4-4',
+                theme: 'Prepositions',
+                q: '"The meeting starts ___ 9 am." — Which preposition is correct?',
+                options: ['in', 'on', 'at', 'by'],
+                answer: 2,
+                hint: 'Use "at" with specific times: at 9 am, at noon, at midnight.',
+            },
+            {
+                id: '3-4-5',
+                theme: 'Prepositions',
+                q: '"The cat is hiding ___ the sofa." — Which preposition is correct?',
+                options: ['above', 'over', 'on', 'under'],
+                answer: 3,
+                hint: '"Under" means below or beneath. The cat is beneath the sofa.',
+            },
+        ],
+
+        /* ── Sub-level 5 · Theme: Question Formation ────────── */
+        5: [
+            {
+                id: '3-5-1',
+                theme: 'Question Formation',
+                q: 'Change to a question: "She is a doctor." →',
+                options: [
+                    'She is a doctor?',
+                    'Is she a doctor?',
+                    'Does she is a doctor?',
+                    'Is she doctor?',
+                ],
+                answer: 1,
+                hint: 'For "to be" questions, swap subject and verb: "She is" becomes "Is she?"',
+            },
+            {
+                id: '3-5-2',
+                theme: 'Question Formation',
+                q: 'Which is the CORRECT question?',
+                options: [
+                    'Where he lives?',
+                    'Where does he live?',
+                    'Where he does live?',
+                    'Where lives he?',
+                ],
+                answer: 1,
+                hint: 'Wh- questions with do/does: Where + does + subject + base verb?',
+            },
+            {
+                id: '3-5-3',
+                theme: 'Question Formation',
+                q: 'Which question word asks for a REASON?',
+                options: ['when', 'where', 'why', 'how'],
+                answer: 2,
+                hint: '"Why" asks for a reason or explanation: "Why are you late?"',
+            },
+            {
+                id: '3-5-4',
+                theme: 'Question Formation',
+                q: '"She sings well, ___?" — Choose the correct tag question.',
+                options: ["isn't she", "doesn't she", "does she", "is she"],
+                answer: 1,
+                hint: 'Main verb is "sings" (present simple positive), so the tag is negative: "doesn\'t she?"',
+            },
+            {
+                id: '3-5-5',
+                theme: 'Question Formation',
+                q: 'Which question asks specifically about TIME?',
+                options: [
+                    'Where does the train go?',
+                    'Why did the train stop?',
+                    'When does the train leave?',
+                    'How fast is the train?',
+                ],
+                answer: 2,
+                hint: '"When" asks about time. "When does the train leave?" asks for the departure time.',
+            },
+        ],
+    },
+
+    /* ════════════════════════════════════════════════════════════
+       STAGE 4 — Read & Conquer  (Reading Comprehension)
+       Difficulty: Intermediate → Comprehension & analysis
+    ════════════════════════════════════════════════════════════ */
+    4: {
+
+        /* ── Sub-level 1 · Theme: Simple Inference ──────────── */
+        1: [
+            {
+                id: '4-1-1',
+                theme: 'Simple Inference',
+                q: '"The cat sat on the mat." — Where is the cat?',
+                options: ['on a chair', 'on the mat', 'on the roof', 'in a box'],
+                answer: 1,
+                hint: 'The sentence directly states "sat on the mat".',
+            },
+            {
+                id: '4-1-2',
+                theme: 'Simple Inference',
+                q: '"Tom is 10 years old. His sister is 3 years older." — How old is Tom\'s sister?',
+                options: ['10', '12', '13', '7'],
+                answer: 2,
+                hint: '10 + 3 = 13 years old.',
+            },
+            {
+                id: '4-1-3',
+                theme: 'Simple Inference',
+                q: '"It was raining, so Mary took her umbrella." — Why did Mary take her umbrella?',
+                options: [
+                    'It was sunny.',
+                    'It was raining.',
+                    'She was going swimming.',
+                    'She lost her bag.',
+                ],
+                answer: 1,
+                hint: 'The word "so" signals the result: raining → she took her umbrella.',
+            },
+            {
+                id: '4-1-4',
+                theme: 'Simple Inference',
+                q: '"The shop opens at 9 am and closes at 6 pm." — How many hours is the shop open?',
+                options: ['7', '8', '9', '10'],
+                answer: 2,
+                hint: '6 pm minus 9 am = 9 hours.',
+            },
+            {
+                id: '4-1-5',
+                theme: 'Simple Inference',
+                q: '"Ben loves football. He trains every Monday and Wednesday." — How many times a week does Ben train?',
+                options: ['1', '2', '3', '4'],
+                answer: 1,
+                hint: 'Monday + Wednesday = 2 days per week.',
+            },
+        ],
+
+        /* ── Sub-level 2 · Theme: Cause & Effect ────────────── */
+        2: [
+            {
+                id: '4-2-1',
+                theme: 'Cause & Effect',
+                q: 'Which word or phrase typically signals CAUSE and EFFECT?',
+                options: ['although', 'unless', 'therefore', 'while'],
+                answer: 2,
+                hint: '"Therefore" introduces a result or consequence.',
+            },
+            {
+                id: '4-2-2',
+                theme: 'Cause & Effect',
+                q: '"It was dark, so she turned on the light." What relationship does "so" show?',
+                options: [
+                    'A contrast',
+                    'A result or effect',
+                    'A condition',
+                    'A time sequence',
+                ],
+                answer: 1,
+                hint: '"So" here means "as a result". Dark → she turned on the light (effect).',
+            },
+            {
+                id: '4-2-3',
+                theme: 'Cause & Effect',
+                q: '"Because it rained heavily, the match was cancelled." Why was the match cancelled?',
+                options: [
+                    'The players were tired.',
+                    'It rained heavily.',
+                    'The stadium was full.',
+                    'The referee arrived late.',
+                ],
+                answer: 1,
+                hint: '"Because" introduces the cause/reason. Heavy rain caused the cancellation.',
+            },
+            {
+                id: '4-2-4',
+                theme: 'Cause & Effect',
+                q: 'Which sentence BEST shows a cause-and-effect relationship?',
+                options: [
+                    'She likes blue and green.',
+                    'He studied hard, so he passed the test.',
+                    'The book was on the table.',
+                    'Monday comes before Tuesday.',
+                ],
+                answer: 1,
+                hint: '"So" signals the effect: studying hard (cause) → passing the test (effect).',
+            },
+            {
+                id: '4-2-5',
+                theme: 'Cause & Effect',
+                q: '"The river flooded due to heavy rain." What caused the flood?',
+                options: [
+                    'The river was blocked.',
+                    'The dam broke.',
+                    'Heavy rain fell.',
+                    'The river was very wide.',
+                ],
+                answer: 2,
+                hint: '"Due to" introduces the cause. Heavy rain caused the river to flood.',
+            },
+        ],
+
+        /* ── Sub-level 3 · Theme: Sequencing ───────────────── */
+        3: [
+            {
+                id: '4-3-1',
+                theme: 'Sequencing',
+                q: 'Which word shows that something happened FIRST?',
+                options: ['finally', 'meanwhile', 'firstly', 'however'],
+                answer: 2,
+                hint: '"Firstly" indicates the first step in a sequence.',
+            },
+            {
+                id: '4-3-2',
+                theme: 'Sequencing',
+                q: '"First I woke up. ___ I brushed my teeth." — Which word fits best?',
+                options: ['Finally', 'Therefore', 'Then', 'Although'],
+                answer: 2,
+                hint: '"Then" shows the next step in a time sequence: first then.',
+            },
+            {
+                id: '4-3-3',
+                theme: 'Sequencing',
+                q: '"After finishing lunch, she washed the dishes." — What did she do FIRST?',
+                options: [
+                    'She washed the dishes.',
+                    'She went for a walk.',
+                    'She ate lunch.',
+                    'She made a phone call.',
+                ],
+                answer: 2,
+                hint: '"After finishing lunch" tells us lunch came first, then she washed the dishes.',
+            },
+            {
+                id: '4-3-4',
+                theme: 'Sequencing',
+                q: 'Which word signals the LAST step in a sequence?',
+                options: ['first', 'next', 'then', 'finally'],
+                answer: 3,
+                hint: '"Finally" marks the last action in a series: First, Then, Finally.',
+            },
+            {
+                id: '4-3-5',
+                theme: 'Sequencing',
+                q: 'In a sequence — "First", ___, "Finally" — which word fits the middle?',
+                options: ['however', 'although', 'next', 'since'],
+                answer: 2,
+                hint: 'The order is: First, Next, Finally. "Next" connects middle steps.',
+            },
+        ],
+
+        /* ── Sub-level 4 · Theme: Main Idea ─────────────────── */
+        4: [
+            {
+                id: '4-4-1',
+                theme: 'Main Idea',
+                q: '"Tom loves cooking. Every weekend he tries new recipes. He owns five cookbooks." — The main idea is:',
+                options: [
+                    'Tom is a professional chef.',
+                    'Tom owns a cookbook store.',
+                    'Tom is passionate about cooking.',
+                    'Tom eats a lot of food.',
+                ],
+                answer: 2,
+                hint: 'All three sentences point to Tom\'s love of cooking. That is the central idea.',
+            },
+            {
+                id: '4-4-2',
+                theme: 'Main Idea',
+                q: '"Bees make honey. They live in hives. They help flowers grow." — Which sentence BEST summarizes this?',
+                options: [
+                    'Bees are dangerous insects.',
+                    'Bees are important and useful insects.',
+                    'Bees only live in gardens.',
+                    'Bees eat flowers.',
+                ],
+                answer: 1,
+                hint: 'All three facts about bees highlight their usefulness — option B is the best summary.',
+            },
+            {
+                id: '4-4-3',
+                theme: 'Main Idea',
+                q: '"Alex exercises daily, eats vegetables, and sleeps 8 hours." — The main idea is:',
+                options: [
+                    'Alex is a doctor.',
+                    'Alex is very tired.',
+                    'Alex has a healthy lifestyle.',
+                    'Alex never eats meat.',
+                ],
+                answer: 2,
+                hint: 'Exercise, diet, and sleep are all healthy habits — the main idea is a healthy lifestyle.',
+            },
+            {
+                id: '4-4-4',
+                theme: 'Main Idea',
+                q: '"The pyramids were built over 4,000 years ago. They are made of huge stone blocks. They were tombs for pharaohs." — This text is mainly about:',
+                options: [
+                    'modern buildings',
+                    "ancient Egypt's pharaohs",
+                    'the ancient Egyptian pyramids',
+                    'how stones are cut',
+                ],
+                answer: 2,
+                hint: 'All sentences describe facts about the pyramids. That is the topic and main idea.',
+            },
+            {
+                id: '4-4-5',
+                theme: 'Main Idea',
+                q: 'A text says: "Recycling saves energy, reduces waste, and helps our environment." It is mainly about:',
+                options: [
+                    'global warming',
+                    'the benefits of recycling',
+                    'how to make paper',
+                    'littering in cities',
+                ],
+                answer: 1,
+                hint: 'Each sentence lists a benefit of recycling — that is the central message.',
+            },
+        ],
+
+        /* ── Sub-level 5 · Theme: Complex Comprehension ─────── */
+        5: [
+            {
+                id: '4-5-1',
+                theme: 'Complex Comprehension',
+                q: '"The Antarctic is the coldest continent. Temperatures drop to -89 C. Only animals like penguins survive there." — What can you INFER?',
+                options: [
+                    'Many animals live in the Antarctic.',
+                    'The Antarctic has warm summers.',
+                    'Very few living things can survive in the Antarctic.',
+                    'Penguins live all over the world.',
+                ],
+                answer: 2,
+                hint: 'Only a few animals can survive extreme cold — this implies very limited life there.',
+            },
+            {
+                id: '4-5-2',
+                theme: 'Complex Comprehension',
+                q: '"Sam studied hard for weeks but was so nervous he forgot everything in the exam." — What most likely caused Sam\'s poor result?',
+                options: [
+                    'He did not study enough.',
+                    'The teacher gave the wrong test.',
+                    'Nervousness affected his performance.',
+                    'He fell asleep during the exam.',
+                ],
+                answer: 2,
+                hint: '"So nervous he forgot everything" directly tells us anxiety caused the poor result.',
+            },
+            {
+                id: '4-5-3',
+                theme: 'Complex Comprehension',
+                q: '"The novel was gripping from start to finish." — What does "gripping" mean in this context?',
+                options: [
+                    'physically tight',
+                    'very long',
+                    'difficult to understand',
+                    'totally captivating',
+                ],
+                answer: 3,
+                hint: 'When used about a story, "gripping" means it is so exciting it is hard to stop reading.',
+            },
+            {
+                id: '4-5-4',
+                theme: 'Complex Comprehension',
+                q: '"Although she was exhausted, she continued working." — What does "although" show here?',
+                options: [
+                    'A result',
+                    'A reason',
+                    'A contrast',
+                    'A sequence',
+                ],
+                answer: 2,
+                hint: '"Although" introduces a contrasting idea: exhausted, yet she still worked.',
+            },
+            {
+                id: '4-5-5',
+                theme: 'Complex Comprehension',
+                q: 'A writer describes a city as "a concrete jungle." This is an example of ___.',
+                options: ['a simile', 'alliteration', 'a metaphor', 'personification'],
+                answer: 2,
+                hint: 'A metaphor says one thing IS another. The city is called a jungle directly — no "like" or "as".',
+            },
+        ],
+    },
+
+    /* ════════════════════════════════════════════════════════════
+       STAGE 5 — Master's Hall  (Advanced English Mastery)
+       Difficulty: Upper-Intermediate → Advanced grammar & style
+    ════════════════════════════════════════════════════════════ */
+    5: {
+
+        /* ── Sub-level 1 · Theme: Perfect Tenses ────────────── */
+        1: [
+            {
+                id: '5-1-1',
+                theme: 'Perfect Tenses',
+                q: '"She has ___ waiting for over an hour." — Choose the correct word.',
+                options: ['be', 'being', 'been', 'was'],
+                answer: 2,
+                hint: '"Has been" is the present perfect continuous. "Been" is the past participle of "be".',
+            },
+            {
+                id: '5-1-2',
+                theme: 'Perfect Tenses',
+                q: '"I ___ never visited France before." — Choose the correct auxiliary.',
+                options: ['was', 'did', 'have', 'had'],
+                answer: 2,
+                hint: 'Present perfect: have/has + past participle. "I have never visited" is correct.',
+            },
+            {
+                id: '5-1-3',
+                theme: 'Perfect Tenses',
+                q: '"By the time I arrived, the film ___." — Choose the correct form.',
+                options: [
+                    'has started',
+                    'have started',
+                    'was started',
+                    'had started',
+                ],
+                answer: 3,
+                hint: 'Past perfect (had + past participle) shows an action completed BEFORE another past action.',
+            },
+            {
+                id: '5-1-4',
+                theme: 'Perfect Tenses',
+                q: '"She ___ already eaten when we called." — Choose the correct auxiliary.',
+                options: ['has', 'have', 'had', 'was'],
+                answer: 2,
+                hint: 'Past perfect uses "had" for all subjects: she had already eaten = before the call.',
+            },
+            {
+                id: '5-1-5',
+                theme: 'Perfect Tenses',
+                q: '"They ___ been friends since childhood." — Choose the correct auxiliary.',
+                options: ['was', 'had', 'have', 'are'],
+                answer: 2,
+                hint: 'Present perfect with "since" = have/has + been: They have been friends since childhood.',
+            },
+        ],
+
+        /* ── Sub-level 2 · Theme: Passive Voice ─────────────── */
+        2: [
+            {
+                id: '5-2-1',
+                theme: 'Passive Voice',
+                q: '"The project was ___ by the team." — Choose the correct form.',
+                options: ['complete', 'completes', 'completing', 'completed'],
+                answer: 3,
+                hint: 'Passive voice = was/were + past participle. "Completed" is the past participle.',
+            },
+            {
+                id: '5-2-2',
+                theme: 'Passive Voice',
+                q: 'Which sentence is in the PASSIVE voice?',
+                options: [
+                    'The dog chased the cat.',
+                    'She wrote the letter.',
+                    'The window was broken by the ball.',
+                    'He is eating lunch.',
+                ],
+                answer: 2,
+                hint: 'Passive voice: the subject receives the action. "The window was broken" — the window did not act.',
+            },
+            {
+                id: '5-2-3',
+                theme: 'Passive Voice',
+                q: '"The book ___ written in 1984." — Choose the correct auxiliary.',
+                options: ['is', 'has', 'was', 'were'],
+                answer: 2,
+                hint: 'Past passive uses "was" (singular). "The book was written" is correct.',
+            },
+            {
+                id: '5-2-4',
+                theme: 'Passive Voice',
+                q: 'Change to PASSIVE: "The teacher explains the lesson."',
+                options: [
+                    'The lesson explains the teacher.',
+                    'The lesson is explaining the teacher.',
+                    'The lesson is explained by the teacher.',
+                    'The lesson has explained by the teacher.',
+                ],
+                answer: 2,
+                hint: 'Present passive: is/are + past participle. "The lesson is explained by the teacher."',
+            },
+            {
+                id: '5-2-5',
+                theme: 'Passive Voice',
+                q: '"English ___ spoken all over the world." — Choose the correct verb form.',
+                options: ['speaks', 'spoke', 'is spoke', 'is spoken'],
+                answer: 3,
+                hint: 'Present passive: is + past participle. "Is spoken" is the correct form.',
+            },
+        ],
+
+        /* ── Sub-level 3 · Theme: Figurative Language ────────── */
+        3: [
+            {
+                id: '5-3-1',
+                theme: 'Figurative Language',
+                q: 'Which sentence uses a SIMILE?',
+                options: [
+                    '"He ran fast."',
+                    '"He ran like the wind."',
+                    '"He was the wind."',
+                    '"It was very windy."',
+                ],
+                answer: 1,
+                hint: 'A simile compares two things using "like" or "as". "Like the wind" is a simile.',
+            },
+            {
+                id: '5-3-2',
+                theme: 'Figurative Language',
+                q: '"The thunder roared angrily." — This is an example of ___.',
+                options: ['a simile', 'a metaphor', 'personification', 'alliteration'],
+                answer: 2,
+                hint: 'Personification gives human qualities to non-human things. Thunder cannot really be angry.',
+            },
+            {
+                id: '5-3-3',
+                theme: 'Figurative Language',
+                q: '"Her eyes were stars." — This is an example of ___.',
+                options: ['a simile', 'a metaphor', 'personification', 'hyperbole'],
+                answer: 1,
+                hint: 'A metaphor says one thing IS another directly, without "like" or "as".',
+            },
+            {
+                id: '5-3-4',
+                theme: 'Figurative Language',
+                q: '"He ate a mountain of food." — What figure of speech is this?',
+                options: ['personification', 'alliteration', 'a simile', 'hyperbole'],
+                answer: 3,
+                hint: 'Hyperbole is an extreme exaggeration for effect. He did not literally eat a mountain.',
+            },
+            {
+                id: '5-3-5',
+                theme: 'Figurative Language',
+                q: '"The bees buzzed busily." — What sound device is used?',
+                options: ['rhyme', 'assonance', 'alliteration', 'personification'],
+                answer: 2,
+                hint: 'Alliteration is the repetition of the same consonant sound at the start of nearby words: b-b-b.',
+            },
+        ],
+
+        /* ── Sub-level 4 · Theme: Advanced Punctuation ────────── */
+        4: [
+            {
+                id: '5-4-1',
+                theme: 'Advanced Punctuation',
+                q: 'Which sentence is correctly punctuated?',
+                options: [
+                    "its a nice day",
+                    "Its a nice day",
+                    "It's a nice day",
+                    "its' a nice day",
+                ],
+                answer: 2,
+                hint: '"It\'s" is a contraction of "it is". The apostrophe replaces the missing "i".',
+            },
+            {
+                id: '5-4-2',
+                theme: 'Advanced Punctuation',
+                q: 'Which sentence uses a COMMA correctly?',
+                options: [
+                    'After dinner we went for, a walk.',
+                    'After dinner, we went for a walk.',
+                    'After, dinner we went for a walk.',
+                    'After dinner we, went for a walk.',
+                ],
+                answer: 1,
+                hint: 'A comma is used after an introductory phrase: "After dinner," sets the scene before the main clause.',
+            },
+            {
+                id: '5-4-3',
+                theme: 'Advanced Punctuation',
+                q: 'Which sentence uses a COLON correctly?',
+                options: [
+                    'She brought: everything a tent and food.',
+                    'She: brought everything a tent and food.',
+                    'She brought everything: a tent, a sleeping bag, and food.',
+                    'She brought everything a tent, a sleeping bag: and food.',
+                ],
+                answer: 2,
+                hint: 'A colon introduces a list or explanation after a complete clause.',
+            },
+            {
+                id: '5-4-4',
+                theme: 'Advanced Punctuation',
+                q: '"The boys books were left on the desk." — Where should the apostrophe go?',
+                options: [
+                    "The boy's books",
+                    "The boys' books",
+                    "The boys books'",
+                    "The boy's book's",
+                ],
+                answer: 1,
+                hint: '"Boys" is plural (more than one boy) → possessive plural adds apostrophe AFTER the s: boys\'.',
+            },
+            {
+                id: '5-4-5',
+                theme: 'Advanced Punctuation',
+                q: 'Which sentence uses a SEMICOLON correctly?',
+                options: [
+                    'I love reading; it relaxes my mind.',
+                    'I love; reading it relaxes my mind.',
+                    'I love reading it; relaxes my mind.',
+                    'I; love reading it relaxes my mind.',
+                ],
+                answer: 0,
+                hint: 'A semicolon joins two related independent clauses. Both sides must be complete sentences.',
+            },
+        ],
+
+        /* ── Sub-level 5 · Theme: Complex Sentences & Connectives */
+        5: [
+            {
+                id: '5-5-1',
+                theme: 'Complex Sentences & Connectives',
+                q: '"Despite the rain, ___ went for a walk." — What fits best?',
+                options: ['but they', 'however they', 'they still', 'yet they'],
+                answer: 2,
+                hint: '"They still" is the most natural continuation after "Despite the rain,".',
+            },
+            {
+                id: '5-5-2',
+                theme: 'Complex Sentences & Connectives',
+                q: 'Which connecting word shows CONTRAST?',
+                options: ['therefore', 'moreover', 'however', 'furthermore'],
+                answer: 2,
+                hint: '"However" introduces a contrasting or opposing idea. "Therefore" shows a result.',
+            },
+            {
+                id: '5-5-3',
+                theme: 'Complex Sentences & Connectives',
+                q: '"She passed the exam ___ she studied very hard." — Which word shows the CAUSE?',
+                options: ['so', 'but', 'because', 'although'],
+                answer: 2,
+                hint: '"Because" introduces the reason/cause: she passed → because she studied hard.',
+            },
+            {
+                id: '5-5-4',
+                theme: 'Complex Sentences & Connectives',
+                q: 'Which sentence contains a RELATIVE CLAUSE?',
+                options: [
+                    'She is very talented.',
+                    'He runs every morning.',
+                    'The man who fixed my car is very skilled.',
+                    'They arrived late yesterday.',
+                ],
+                answer: 2,
+                hint: 'A relative clause begins with who, which, or that and gives extra info: "who fixed my car".',
+            },
+            {
+                id: '5-5-5',
+                theme: 'Complex Sentences & Connectives',
+                q: '"He is brilliant; ___, he lacks confidence." — Which connective fits best?',
+                options: ['moreover', 'in addition', 'however', 'similarly'],
+                answer: 2,
+                hint: '"However" shows the contrast: brilliant (positive) vs. lacks confidence (negative).',
+            },
+        ],
+    },
+};
