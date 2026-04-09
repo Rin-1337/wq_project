@@ -1,5 +1,5 @@
 # WordQuest ชื่อนี้คิดไว้ก่อนค่อยเปลี่ยนทีหลัง
-# 📚 WordQuest — เกมแบบทดสอบภาษาอังกฤษ (Gamified English Quiz)
+# WordQuest — เกมแบบทดสอบภาษาอังกฤษ
 
 > **Single-Page Application (SPA)** ที่สร้างด้วย Vanilla JavaScript ล้วนๆ ไม่พึ่ง Framework ใดๆ  
 > มีระบบ Auth, ระดับเลเวล, ร้านค้าไอเทม, และ Leaderboard ครบครัน
